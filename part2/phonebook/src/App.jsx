@@ -2,14 +2,15 @@ import { useEffect, useState } from 'react'
 import Filter from './components/Filter'
 import PersonForm from './components/PersonForm'
 import Numbers from './components/Numbers'
-import axios from 'axios'
+import Notification from './components/Notification'
 import phonebook from './services/phonebook'
 const App = () => {
   const [persons, setPersons] = useState([])
   const [newNumber, setNewNumber] = useState('')
   const [newName, setNewName] = useState('')
   const [filter, setFilter] = useState('')
-
+  const [message, setMessage] = useState(null)
+  const [error,setError] = useState(false)
   const hook = () => {
     console.log('effect')
     phonebook.getAll().then(response => {
@@ -49,9 +50,14 @@ const App = () => {
         .update(person.id, changedPerson)
         .then(response => {
           setPersons(persons.map(p => p.id !== person.id ? p : response))
+          setMessage(`Updated ${newName}`)
           setNewName('')
           setNewNumber('')
-        })
+        }) 
+        .catch(error => {
+          setError(true)
+          setMessage(`Information of ${person.name} has already been removed from server`)
+         })
 
       return
     }
@@ -59,6 +65,7 @@ const App = () => {
       .create(nameObject)
       .then(response => {
         setPersons(persons.concat(response))
+        setMessage(`Added ${newName}`)
         setNewName('')
         setNewNumber('')
       })
@@ -73,9 +80,11 @@ const App = () => {
         .then((deletedData) => {
           console.log('Deleted data:', deletedData);
           setPersons(persons.filter(person => person.id !== id));
+          setMessage(`Deleted ${person.name}`)
         })
         .catch(error => {
-          console.error('Error deleting person:', error);
+         setError(true)
+         setMessage(`Information of ${person.name} has already been removed from server`)
         });
     }
   }
@@ -84,6 +93,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} error={error} />
       <Filter filter={filter} handleFilterChange={handleFilterChange} />
       <PersonForm addPerson={addPerson} newName={newName} newNumber={newNumber} handlenumberChange={handlenumberChange} handleNameChange={handleNameChange} />
       <Numbers deletePerson={deletePerson} persons={persons} filter={filter} />
