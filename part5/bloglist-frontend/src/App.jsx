@@ -100,7 +100,7 @@ const App = () => {
 
   const loginForm = () => {
     return (
-      <Togglable>
+      <Togglable buttonLabel='login'>
       <LoginForm
         handleLogin={handleLogin}
       />

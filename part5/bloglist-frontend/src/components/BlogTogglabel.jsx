@@ -26,7 +26,7 @@ const BlogTogglabel = ({ blog, updateBlog, deleteBlog }) => {
                 <button onClick={() => deleteBlog(blog)}>remove</button>
             </div>
         
-            <div style={showWhenVisible}>
+            <div style={showWhenVisible} className='togglableBlog'>
                 <div>{blog.url}</div>
                 <div>likes {blog.likes}<button onClick={() => updateBlog({ ...blog, likes: blog.likes + 1 })}>like</button></div>
             </div>
