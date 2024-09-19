@@ -22,13 +22,13 @@ const BlogTogglabel = ({ blog, updateBlog, deleteBlog }) => {
         <div style={blogStyle}>
             <div>
                 {blog.title} {blog.author}
-                <button onClick={toggleVisibility}>{visible ? 'hide' : 'view'}</button>
-                <button onClick={() => deleteBlog(blog)}>remove</button>
+                <button onClick={toggleVisibility} data-testid={`${visible? 'hide' : 'view'}-${blog.title}`}>{visible ? 'hide' : 'view'}</button>
+                <button onClick={() => deleteBlog(blog)} data-testid={`remove-${blog.title}`}>remove</button>
             </div>
         
             <div style={showWhenVisible} className='togglableBlog'>
                 <div>{blog.url}</div>
-                <div>likes {blog.likes}<button onClick={() => updateBlog({ ...blog, likes: blog.likes + 1 })}>like</button></div>
+                <div>likes {blog.likes}<button onClick={() => updateBlog({ ...blog, likes: blog.likes + 1 })} data-testid={`like-${blog.title}`}>like</button></div>
             </div>
             
         </div>
