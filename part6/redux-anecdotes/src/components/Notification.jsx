@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from "react-redux"
 import { useEffect } from "react"
-import { clearNotification} from "../reducers/notificationReducer"
+import { setNotificationWithTimeout} from "../reducers/notificationReducer"
 const Notification = () => {
   const notification = useSelector(state => state.notification)
   const dispatch = useDispatch()
@@ -11,10 +11,7 @@ const Notification = () => {
   }
   useEffect(() => {
     if (notification !== '') {
-      const timer = setTimeout(() => {
-        dispatch(clearNotification());  // Dispatch the action to clear the notification
-      }, 5000);
-      return () => clearTimeout(timer);  // Clean up the timeout if the component is unmounted or re-rendered
+      dispatch(setNotificationWithTimeout(notification, 5))
     }
   }, [notification, dispatch]);
 
