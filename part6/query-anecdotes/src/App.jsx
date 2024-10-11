@@ -1,19 +1,47 @@
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
-
+import { useQuery, useQueryClient, useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { useNotificationDispatch } from './store/NotificationContext'
 const App = () => {
 
+  const notificationDispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
+
+  const updateAnecdoteMutation = useMutation({
+    mutationFn: (anecdote) => axios.put(`http://localhost:3001/anecdotes/${anecdote.id}`, anecdote).then(res => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+    }
+  })
+
   const handleVote = (anecdote) => {
-    console.log('vote')
+    updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
+
+    notificationDispatch({
+      type: 'ADD_NOTIFICATION',
+      payload: {
+        message: `you voted '${anecdote.content}'`,
+      }
+    })
   }
 
-  const anecdotes = [
-    {
-      "content": "If it hurts, do it more often",
-      "id": "47145",
-      "votes": 0
-    },
-  ]
+  
+  const reult =  useQuery({ 
+    queryKey: ['anecdotes'],
+    queryFn: () => axios.get('http://localhost:3001/anecdotes').then(res => res.data),
+    retry: false
+})
+  const anecdotes = reult.data
+
+  if (reult.isLoading) {
+    return <div>Loading...</div>
+  }
+
+  if (reult.isError) {
+    return <div>{reult.error.message}</div>
+  }
+
 
   return (
     <div>
