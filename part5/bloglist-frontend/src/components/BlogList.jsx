@@ -13,7 +13,7 @@ const BlogList = () => {
             <h2>blogs</h2>
             <ul>
                 {sortedBlogs.map(blog =>
-                    <li key={blog.id}>
+                    <li key={blog._id}>
                         <BlogTogglabel blog={blog}/>
                     </li>
                 )}

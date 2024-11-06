@@ -1,45 +1,34 @@
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
+import { useField } from '../hooks'
 const BlogForm = () => {
-    const [title, setTitle] = useState('')
-    const [author, setAuthor] = useState('')
-    const [url, setUrl] = useState('')
+    const title = useField('text')
+    const author = useField('text')
+    const url = useField('text')
     const dispatch = useDispatch();
 
     const addBlog = (event) => {
         event.preventDefault()
-        dispatch(createBlog({ title, author, url }))
-        setTitle('')
-        setAuthor('')
-        setUrl('')
+        dispatch(createBlog({ title: title.inputProps.value, author: author.inputProps.value, url: url.inputProps.value }))
+        title.reset()
+        author.reset()
+        url.reset()
     }
     return (
         <form onSubmit={addBlog}>
             <div>
                 title
-                <input
-                    type="text"
-                    placeholder='title'
-                    value={title}
-                    onChange={({ target }) => setTitle(target.value)}
-                />
+                <input {...title.inputProps} />
             </div>
             <div>   
                 author  
-                <input      
-                    value={author}
-                    placeholder='author'
-                    onChange={({ target }) => setAuthor(target.value)}
-                />
+                <input {...author.inputProps}/>
             </div>
             <div>
                 url
                 <input
-                    type="text"
-                    placeholder='url'
-                    value={url}
-                    onChange={({ target }) => setUrl(target.value)}
+                    {...url.inputProps}
                 />
             </div>
             <button type="submit">create</button>
