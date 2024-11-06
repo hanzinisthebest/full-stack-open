@@ -5,24 +5,28 @@ import LoginForm from './components/LoginForm'
 import Togglable from './components/Togglable'
 import BlogForm from './components/BlogForm'
 import BlogTogglabel from './components/BlogTogglabel'
-import { useDispatch } from "react-redux";
+import BlogList from './components/BlogList'
+import { useDispatch, useSelector } from "react-redux";
 import { setNotificationWithTimeout} from "./reducers/notificationReducer"
 import Notification from './components/Notification'
+import {initializeBlogs,updateBlogLikes,deleteBlog} from "./reducers/blogReducer"
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
-  const [blogs, setBlogs] = useState([])
+  // const [blogs, setBlogs] = useState([])
   const [user, setUser] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null)
-  const [message, setMessage] = useState(null)
-
+  
   const dispatch = useDispatch()
   const blogFormRef = useRef()
+  const blogs = useSelector(state => state.blogs)
   useEffect(() => {
-    blogService.getAll().then(blogs =>
-      setBlogs( blogs )
-    )  
+    // blogService.getAll().then(blogs =>
+    //   setBlogs( blogs )
+    // )
+    dispatch(initializeBlogs())
   }, [])
 
+ 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedNoteappUser')
     if (loggedUserJSON) {
@@ -60,44 +64,13 @@ const App = () => {
     dispatch(setNotificationWithTimeout('you are logged out', 5))
   }
 
-  const addBlog = (blogObject) => {
-    blogService
-      .create(blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.concat(returnedBlog))
-        dispatch(setNotificationWithTimeout(`a new blog ${returnedBlog.title} by ${returnedBlog.author} added`, 5))
-      }).catch(error => {
-        setErrorMessage("something went wrong")
-      })
 
-  }
 
-  const updateBlog = (blogObject) => {
-    blogService
-      .update(blogObject._id,blogObject)
-      .then(returnedBlog => {
-        setBlogs(blogs.map(blog => blog._id !== returnedBlog._id ? blog : returnedBlog))
-      })
-  }
 
-  const deleteBlog = (blogObject) => {
-    const ok = window.confirm(`remove blog ${blogObject.title} by ${blogObject.author}?`)
-    if (!ok) {
-      return 
-    }
-    blogService.
-      remove(blogObject._id)
-      .then(() => {
-        setBlogs(blogs.filter(blog => blog._id !== blogObject._id))
-        dispatch(setNotificationWithTimeout(`blog ${blogObject.title} by ${blogObject.author} removed`, 5))
-      }) 
-  }
   const blogForm = () => {
     return (
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
-        <BlogForm
-          createBlog={addBlog}
-          />
+        <BlogForm/>
       </Togglable>        
     )
   }
@@ -121,9 +94,8 @@ const App = () => {
         loginForm() :
         blogForm()
       }
-      {user === null ? null :
-      blogs.sort((a,b) => b.likes - a.likes).map(blog =>
-        <BlogTogglabel key={blog.id} blog={blog} updateBlog={updateBlog} deleteBlog={deleteBlog} />)}
+      {user === null ? null : <BlogList
+        blogs={blogs}/>}
     </div>
   )
 }
