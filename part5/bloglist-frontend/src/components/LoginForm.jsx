@@ -1,17 +1,30 @@
 import { useState } from 'react'
-const LoginForm = ({
-    handleLogin,
-   }) => {
-    const [username, setUsername] = useState('') 
-    const [password, setPassword] = useState('')
-    
+import { useDispatch, useSelector } from "react-redux"
+import { login } from "../reducers/userReducer"
+import { setNotificationWithTimeout } from "../reducers/notificationReducer"
+import { useField } from '../hooks'
+const LoginForm = () => {
+    const dispatch = useDispatch()
+    const username = useField('text')
+    const password = useField('password')
+    const user  = useSelector(state => state.user)
+    const handleLogin = async () => {
+      try {
+        await dispatch(login({username: username.inputProps.value, password: password.inputProps.value}))
+        dispatch(setNotificationWithTimeout(`welcome ${username.inputProps.value}`, 5))
+      } catch (exception) {
+        // console.log(exception);
+        
+        dispatch(setNotificationWithTimeout('wrong credentials', 5))
+      }
+    }
     const handleSubmit =  (event) => {
       event.preventDefault()
 
-      handleLogin({username, password})
+      handleLogin()
 
-      setUsername('')
-      setPassword('')
+      username.reset()
+      password.reset()
     }
    return (
      <div>
@@ -20,18 +33,15 @@ const LoginForm = ({
          <div>
            username
            <input
-             value={username}
-             data-testid='username'
-             onChange={({ target }) => setUsername(target.value)}
+           {...username.inputProps}
+           data-testid='username'
            />
          </div>
          <div>
            password
            <input
-             type="password"
-             value={password}
-             data-testid='password'
-             onChange={({ target }) => setPassword(target.value)}
+           {...password.inputProps}
+           data-testid='password'
            />
        </div>
          <button type="submit">login</button>
