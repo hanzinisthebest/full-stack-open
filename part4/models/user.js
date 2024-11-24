@@ -6,7 +6,11 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true // this ensures the uniqueness of username
       },
-  name: String,
+  name: {
+    type: String,
+    required: true,
+    unique: true // this ensures the uniqueness of username
+  },
   passwordHash: String,
   blogs: [
     {

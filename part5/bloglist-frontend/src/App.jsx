@@ -9,7 +9,9 @@ import { setNotificationWithTimeout} from "./reducers/notificationReducer"
 import Notification from './components/Notification'
 import {initializeBlogs,updateBlogLikes,deleteBlog} from "./reducers/blogReducer"
 import { setUser, logout } from "./reducers/userReducer"
-
+import  Users from './components/UsersList'
+import User from './components/User'
+import { Link, Routes, Route   } from 'react-router-dom'
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
   // const [blogs, setBlogs] = useState([])
@@ -63,16 +65,30 @@ const App = () => {
   }
   return (
     <div>
-      <h2>blogs</h2>
+      
+      <h1>blogs website</h1>
+      <div>
+        <Link to="/">home  </Link>
+        <Link to="/users"> users</Link>
+        {/* <Link to="/blogs"> blogs</Link> */}
+        
+      </div>
+      {user === null ? <p>log in to application</p> : <div><p>{user?.name} is logged in</p> <button onClick={handleLogout}>logout</button></div>}
       {errorMessage !== null && <div className="error">{errorMessage}</div>}
       <Notification/>
-      {user === null ? <p>log in to application</p> : <div><p>{user?.name} is logged in</p> <button onClick={handleLogout}>logout</button></div>}
-      {user === null ?
+      <Routes>
+        <Route path='/' element={user === null ?
         loginForm() :
-        blogForm()
-      }
-      {user === null ? null : <BlogList
-        blogs={blogs}/>}
+        <div>
+          {blogForm()}
+          <BlogList blogs={blogs}/>
+        </div>
+      }></Route>
+        {/* <Route path="/blogs" element={ user === null ? loginForm() :<BlogList
+        blogs={blogs}/>} /> */}
+        <Route path="/users" element={user === null ? loginForm() :<Users />} />
+        <Route path="/users/:id" element={<User />} />
+      </Routes>
     </div>
   )
 }
