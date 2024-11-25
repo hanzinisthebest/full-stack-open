@@ -46,5 +46,20 @@ export const deleteBlog = (blogObject) => {
         dispatch(setBlogs(blogs))
     }
 }
+
+export const addCommentRedux = (id, comment) => {
+    return async dispatch => {
+        await blogService.addComment(id, comment)
+        const blogs = await blogService.getAll()
+        dispatch(setBlogs(blogs))
+    }
+}
+
+// export const getBlogById = (id) => {
+//     return async dispatch => {
+//         const blog = await blogService.getById(id)
+//         dispatch(setBlog(blog))
+//     }
+// }
 export default blogSlice.reducer
     
