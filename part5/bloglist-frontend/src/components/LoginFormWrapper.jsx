@@ -1,12 +1,18 @@
-import Togglable from './Togglable'
+import './LoginFormWrapper.css'
 import LoginForm from './LoginForm'
+import Notification from './Notification'
 
 const LoginFormWrapper = () => {
   return (
-    <Togglable buttonLabel='log in'>
-      <LoginForm />
-    </Togglable>
+    <div className="login-wrapper">
+      <div className="login-container">
+        <Notification />
+        <h1>Welcome Back</h1>
+        <p className="login-subtitle">Please login to continue</p>
+        <LoginForm />
+      </div>
+    </div>
   )
 }
 
-export default LoginFormWrapper 
+export default LoginFormWrapper

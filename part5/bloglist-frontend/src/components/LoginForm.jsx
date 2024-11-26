@@ -11,11 +11,11 @@ const LoginForm = () => {
     const handleLogin = async () => {
       try {
         await dispatch(login({username: username.inputProps.value, password: password.inputProps.value}))
-        dispatch(setNotificationWithTimeout(`welcome ${username.inputProps.value}`, 5))
+        dispatch(setNotificationWithTimeout(`welcome ${username.inputProps.value}`, 'success', 5))
       } catch (exception) {
         // console.log(exception);
         
-        dispatch(setNotificationWithTimeout('wrong credentials', 5))
+        dispatch(setNotificationWithTimeout('wrong credentials', 'error', 5))
       }
     }
     const handleSubmit =  (event) => {
@@ -23,12 +23,13 @@ const LoginForm = () => {
 
       handleLogin()
 
-      username.reset()
-      password.reset()
+      if (user) {
+        username.reset()
+        password.reset()
+      }
     }
    return (
      <div>
-       <h2>Login</h2>
        <form onSubmit={handleSubmit}>
          <div>
            username

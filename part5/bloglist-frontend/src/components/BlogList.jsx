@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { deleteBlog } from "../reducers/blogReducer";
 import { setNotificationWithTimeout } from "../reducers/notificationReducer";
@@ -5,7 +6,7 @@ import { Link } from "react-router-dom";
 
 
 const BlogList = () => {
-    const dispatch = useDispatch()
+
     const blogs = useSelector(state => state.blogs)
     const sortedBlogs = [...blogs].sort((a, b) => b.likes - a.likes)
     // console.log(sortedBlogs)

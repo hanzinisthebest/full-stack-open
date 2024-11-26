@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import blogService from './services/blogs'
-import LoginForm from './components/LoginForm'
-import Togglable from './components/Togglable'
-import BlogForm from './components/BlogForm'
+
 import BlogList from './components/BlogList'
 import { useDispatch, useSelector } from "react-redux";
 import { setNotificationWithTimeout} from "./reducers/notificationReducer"
@@ -13,10 +11,9 @@ import  Users from './components/UsersList'
 import User from './components/User'
 import Blog from './components/Blog'
 import Navigation from './components/Navigation'
-import { Link, Routes, Route   } from 'react-router-dom'
+import {  Routes, Route, Navigate   } from 'react-router-dom'
 import BlogFormWrapper from './components/BlogFormWrapper'
 import LoginFormWrapper from './components/LoginFormWrapper'
-import LoginStatus from './components/LoginStatus'
 
 const App = () => {
   const [loginVisible, setLoginVisible] = useState(false)
@@ -53,21 +50,28 @@ const App = () => {
 
 
   return (
-    <div>
-      <Navigation onLogout={handleLogout}/>
-      <LoginStatus  />
-      <Notification />
+    <div className="app-container">
+      {user && <Navigation onLogout={handleLogout}/>}
+      {/* {user && <LoginStatus />} */}
+      {user && <Notification />}
+      
       <Routes>
-        <Route path='/' element={user === null ?
-          <LoginFormWrapper /> :
-          <div>
-            <BlogFormWrapper blogFormRef={blogFormRef} />
-            <BlogList blogs={blogs}/>
-          </div>
-        }></Route>
-        <Route path="/users" element={user === null ? <LoginFormWrapper /> :<Users />} />
-        <Route path="/users/:id" element={<User />} />
-        <Route path="/blogs/:id" element={<Blog />} />
+        <Route path='/' element={
+          user === null ? (
+            <div className="login-page">
+              <LoginFormWrapper />
+            </div>
+          ) : (
+            <div className="main-content">
+              {/* <Notification /> */}
+              <BlogFormWrapper blogFormRef={blogFormRef} />
+              <BlogList blogs={blogs}/>
+            </div>
+          )
+        }/>
+        <Route path="/users" element={user === null ? <Navigate to="/" /> : <Users />} />
+        <Route path="/users/:id" element={user === null ? <Navigate to="/" /> : <User />} />
+        <Route path="/blogs/:id" element={user === null ? <Navigate to="/" /> : <Blog />} />
       </Routes>
     </div>
   )
