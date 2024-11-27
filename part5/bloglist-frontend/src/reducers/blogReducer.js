@@ -33,7 +33,7 @@ export const createBlog = (blogObject) => {
 
 export const updateBlogLikes = (blogObject) => {
     return async dispatch => {
-        await blogService.update(blogObject.id, blogObject)
+        await blogService.update(blogObject._id, blogObject)
         const blogs = await blogService.getAll()
         dispatch(setBlogs(blogs))
     }

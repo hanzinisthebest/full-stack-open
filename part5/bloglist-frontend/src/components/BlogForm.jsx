@@ -47,13 +47,13 @@ const modalStyles = {
     fontSize: '1rem'
   },
   closeButton: {
-    position: 'absolute',
-    top: '1rem',
-    right: '1rem',
-    background: 'none',
+    position: 'relative',
+    float: 'right',
+    background: 'none', 
     border: 'none',
     fontSize: '1.5rem',
-    cursor: 'pointer'
+    cursor: 'pointer',
+    marginBottom: '1rem'
   }
 }
 
@@ -105,12 +105,17 @@ const BlogForm = ({ onClose }) => {
       // Close only if clicking the outer modal container, not its contents
       if (event.target === event.currentTarget) {
           onClose()
+          title.reset()
+          author.reset()
+          url.reset()
+          setErrors({})
       }
   }
     return (
         <div style={modalStyles.modal} onClick={handleModalClick}>
             <div style={modalStyles.content}>
-                <button onClick={onClose} style={modalStyles.closeButton}>×</button>
+                
+                    <button onClick={onClose} style={modalStyles.closeButton}>×</button>
                 <h2 style={{ marginBottom: '1.5rem' }}>Create New Blog</h2>
                 <form onSubmit={addBlog}>
                     <div>
