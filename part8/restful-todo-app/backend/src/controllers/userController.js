@@ -6,17 +6,27 @@ const generateToken = (id) => {
       };
 
 const registerUser = async (req, res) => {
-    const { username, email, password } = req.body;
-  
-    try {
-      const user = await User.create({ username, email, password });
-      const token = generateToken(user.id);
-      res.status(201).json({ token });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal server error' });
-    }
-  };
+        const { username, email, password, isAdmin } = req.body; // Include isAdmin in destructuring
+      
+        try {
+          // Create the user with the isAdmin field
+          const user = await User.create({ 
+            username, 
+            email, 
+            password, 
+            isAdmin: isAdmin || false // Default to false if not provided
+          });
+      
+          // Generate a token
+          const token = generateToken(user.id);
+      
+          // Respond with the token
+          res.status(201).json({ token });
+        } catch (error) {
+          console.error(error);
+          res.status(500).json({ error: 'Internal server error' });
+        }
+    };
 
 const loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -30,6 +40,16 @@ const loginUser = async (req, res) => {
   
       const token = generateToken(user.id);
       res.status(200).json({ token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
+
+const getProfile = async (req, res) => {
+    try {
+      const user = await User.findById(req.user.id);
+      res.status(200).json(user);
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal server error' });
@@ -51,7 +71,8 @@ const getAllUsers = async (req, res) => {
 module.exports = {
     registerUser,
     loginUser,
-    getAllUsers
+    getAllUsers,
+    getProfile
 }
 
 
