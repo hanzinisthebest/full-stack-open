@@ -1,6 +1,7 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-    const generateToken = (id) => {
+const bcrypt = require('bcrypt');
+const generateToken = (id) => {
         return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '1h' });
       };
 
@@ -23,7 +24,7 @@ const loginUser = async (req, res) => {
     try {
       const user = await User.findOne({ email });
   
-      if (!user || !(await user.comparePassword(password))) {
+      if (!user || !(await bcrypt.compare(password, user.password))) {
         return res.status(401).json({ error: 'Invalid credentials' });
       }
   
