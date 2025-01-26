@@ -37,6 +37,20 @@ exports.updateTodo = async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 };
+// // complete a Todo
+// exports.completeTodo = async (req, res) => {
+//   const { id } = req.params;
+//   try {
+//     const todo = await Todo.findByIdAndUpdate(
+//       id,
+//       { completed: true },
+//       { new: true }
+//     );
+//     res.status(200).json(todo);
+//   } catch (err) {
+//     res.status(400).json({ error: err.message });
+//   }
+// };
 
 // Delete a Todo
 exports.deleteTodo = async (req, res) => {
